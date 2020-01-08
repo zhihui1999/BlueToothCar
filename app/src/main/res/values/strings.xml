@@ -1,0 +1,38 @@
+<resources>
+    <string name="type">使用下划线命名法:模块名+逻辑名称</string>
+
+    <!--APP-->
+    <string name="app_name">ABD2WD</string>
+
+    <!--activity_main-->
+    <string name="main_connected">当前连接方式：已连接</string>
+    <string name="main_unconnected">当前连接方式：未连接</string>
+    <string name="main_speed_1">当前速度：1档</string>
+    <string name="main_speed_2">当前速度：2档</string>
+    <string name="main_speed_3">当前速度：3档</string>
+    <string name="main_school_name">沧州师范学院</string>
+    <string name="main_url">学校主页：http://caztc.edu.cn</string>
+    <string name="main_gravity_sensor">重力感应</string>
+    <string name="main_connect">连接</string>
+    <string name="main_forward">前进</string>
+    <string name="main_back">后退</string>
+    <string name="main_turn_letf">左转</string>
+    <string name="main_turn_right">右转</string>
+    <string name="main_stop">停止</string>
+    <string name="main_left">左</string>
+    <string name="main_center">中</string>
+    <string name="main_right">右</string>
+    <string name="main_left_rotate">左旋</string>
+    <string name="main_right_rotate">右旋</string>
+    <string name="main_outfire">灭火</string>
+    <string name="main_whistle">鸣笛</string>
+    <string name="main_accelerate">加速</string>
+    <string name="main_moderate">减速</string>
+    <string name="main_setting">设置</string>
+
+<!--
+<string name="current_time">当前日期：%1$d年%2$d月%3$d日</string>
+tvDate.setText(String.format(getResources().getString(R.string.current_time),year,month,day));
+-->
+
+</resources>
