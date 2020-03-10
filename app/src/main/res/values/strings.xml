@@ -10,8 +10,8 @@
     <string name="main_speed_1">当前速度：1档</string>
     <string name="main_speed_2">当前速度：2档</string>
     <string name="main_speed_3">当前速度：3档</string>
-    <string name="main_school_name">沧州师范学院</string>
-    <string name="main_url">学校主页：http://caztc.edu.cn</string>
+    <string name="main_school_name">沧州第一中学</string>
+    <string name="main_url">学校主页：http://hbczyizhong.cn</string>
     <string name="main_gravity_sensor">重力感应</string>
     <string name="main_connect">连接</string>
     <string name="main_forward">前进</string>
@@ -28,6 +28,12 @@
     <string name="main_whistle">鸣笛</string>
     <string name="main_accelerate">加速</string>
     <string name="main_moderate">减速</string>
+
+    <string name="main_autopilotmode">自动驾驶模式</string>
+    <string name="main_trackingmode">循迹模式</string>
+    <string name="main_exitmode">模式退出</string>
+
+    <string name="main_type">模式</string>
     <string name="main_setting">设置</string>
 
 <!--

@@ -34,7 +34,7 @@ import cn.edu.caztc.bluetoothcar.util.BluetoothOperationCallback;
 import cn.edu.caztc.bluetoothcar.util.BluetoothOperator;
 import cn.edu.caztc.bluetoothcar.util.SharedPreferencesUtil;
 
-public class MainActivity extends AppCompatActivity implements SensorEventListener {
+public class MainActivity extends AppCompatActivity {
 
     //常量声明区
     private static final String TAG = "蓝牙" + MainActivity.class.getSimpleName();
@@ -44,8 +44,6 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
     TextView tvConnectState;
     @BindView(R.id.tv_CurrentSpeed)
     TextView tvCurrentSpeed;
-    @BindView(R.id.chk_GravitySensor)
-    CheckBox chkGravitySensor;
     @BindView(R.id.btn_Connect)
     Button btnConnect;
     @BindView(R.id.iv_Icon)
@@ -84,6 +82,12 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
     Button btnModerate;
     @BindView(R.id.btn_setting)
     Button btnSetting;
+    @BindView(R.id.btn_AutopilotMode)
+    Button btnAutopilotMode;
+    @BindView(R.id.btn_TrackingMode)
+    Button btnTrackingMode;
+    @BindView(R.id.btn_ExitMode)
+    Button btnExitMode;
 
     //普通成员变量声明区
     private Context mContext = this;
@@ -94,11 +98,13 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
     private AlertDialog.Builder mBuilder;
 
     private Set<BluetoothDevice> devicesSet = null;
+    //命令名称
     private String[] commandNameArr = {"forward", "back", "turn_letf", "turn_right", "stop", "left", "center", "right",
-            "left_rotate", "right_rotate", "outfire", "whistle", "accelerate", "moderate"};
+            "left_rotate", "right_rotate", "outfire", "whistle", "accelerate", "moderate","autopilotmode","trackingmode","exitmode"};
+    //初始命令
     private String[] firstCommandArr = {"ONA", "ONB", "ONC", "OND", "ONF", "left", "center", "right",
-            "1", "2", "3", "4", "5", "6"};
-    private String[] commandArr = new String[14];
+            "1", "2", "3", "4", "5", "6","$4WD,MODE31#","$4WD,MODE21#","$4WD,MODE30#"};
+    private String[] commandArr = new String[17];
     private String[] blueToothDeviceNameArr;
     private String[] blueToothDeviceMACArr;
 
@@ -128,18 +134,10 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
         //重力传感器获取服务
         mSensorManager = ((SensorManager) getSystemService(SENSOR_SERVICE));
 
-        // 第一次则初始化默认命令，否则读取保存的命令
-        String first = SharedPreferencesUtil.getInstance(mContext).getSP("First", "true");
-        if (first.equals("true")) {
-            for (int i = 0; i < commandNameArr.length; i++) {
-                commandArr[i] = SharedPreferencesUtil.getInstance(mContext).getSP(commandNameArr[i], firstCommandArr[i]);
-            }
-            SharedPreferencesUtil.getInstance(mContext).putSP("First", "false");
-        } else {
-            for (int i = 0; i < commandNameArr.length; i++) {
-                commandArr[i] = SharedPreferencesUtil.getInstance(mContext).getSP(commandNameArr[i], firstCommandArr[i]);
-            }
+        for (int i = 0; i < commandNameArr.length; i++) {
+            commandArr[i] = SharedPreferencesUtil.getInstance(mContext).getSP(commandNameArr[i], firstCommandArr[i]);
         }
+
 
         btnForward.setOnTouchListener(this.touchListener);
         btnBack.setOnTouchListener(this.touchListener);
@@ -155,7 +153,7 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
      *
      * @param view
      */
-    @OnClick({R.id.btn_Connect, R.id.btn_Left, R.id.btn_Center, R.id.btn_Right, R.id.btn_LeftRotate, R.id.btn_Outfire, R.id.btn_Accelerate, R.id.btn_RightRotate, R.id.btn_Whistle, R.id.btn_Moderate, R.id.btn_setting})
+    @OnClick({R.id.btn_Connect, R.id.btn_Left, R.id.btn_Center, R.id.btn_Right, R.id.btn_LeftRotate, R.id.btn_Outfire, R.id.btn_Accelerate, R.id.btn_RightRotate, R.id.btn_Whistle, R.id.btn_Moderate,  R.id.btn_setting,R.id.btn_AutopilotMode, R.id.btn_TrackingMode, R.id.btn_ExitMode})
     public void onViewClicked(View view) {
         switch (view.getId()) {
             case R.id.btn_Connect:
@@ -187,6 +185,15 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
                 break;
             case R.id.btn_Moderate:
                 mBluetoothOp.write(commandArr[13].getBytes());
+                break;
+            case R.id.btn_AutopilotMode:
+                mBluetoothOp.write(commandArr[14].getBytes());
+                break;
+            case R.id.btn_TrackingMode:
+                mBluetoothOp.write(commandArr[15].getBytes());
+                break;
+            case R.id.btn_ExitMode:
+                mBluetoothOp.write(commandArr[16].getBytes());
                 break;
             case R.id.btn_setting:
                 showSettingList();
@@ -296,7 +303,7 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
      */
     private void showSettingList() {
         final String[] setting = {"设置前进按钮", "设置后退按钮", "设置左转按钮", "设置右转按钮", "设置停止按钮", "设置左按钮", "设置中按钮",
-                "设置右按钮", "设置左旋按钮", "设置右旋按钮", "设置灭火按钮", "设置鸣笛按钮", "设置加速按钮", "设置减速按钮"};
+                "设置右按钮", "设置左旋按钮", "设置右旋按钮", "设置灭火按钮", "设置鸣笛按钮", "设置加速按钮", "设置减速按钮","设置自动计时模式按钮","设置循迹模式按钮","设置模式退出按钮"};
         mBuilder = new AlertDialog.Builder(this).setIcon(R.mipmap.ic_icon_foreground)
                 .setTitle("设置指令")
                 .setItems(setting, new DialogInterface.OnClickListener() {
@@ -328,50 +335,6 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
         mBuilder.create().show();
     }
 
-    /**
-     * 传感器监听
-     *
-     * @param sensorEvent
-     */
-    @Override
-    public void onSensorChanged(SensorEvent sensorEvent) {
-        float[] weizhi;
-        weizhi = sensorEvent.values;
-        int j = -1;
-        float f3 = -weizhi[0];
-        float f1 = -weizhi[1];
-        float f2 = -weizhi[2];
-        if (4.0F * (f3 * f3 + f1 * f1) >= f2 * f2) {
-            int i;
-            for (j = 90 - Math.round((float) Math.atan2(-f1, f3) * 57.29578F); ; j -= 360) {
-                i = j;
-                if (j < 360) {
-                    break;
-                }
-            }
-            for (; ; ) {
-                j = i;
-                if (i >= 0) {
-                    break;
-                }
-                i += 360;
-            }
-        }
-        if (this.chkGravitySensor.isChecked()) {
-            Log.d(TAG, "onSensorChanged: 第1个数：" + weizhi[0] + "第2个数：" + weizhi[1] + "第3个数：" + weizhi[2]);
-//            paramSensorEvent = new Message();
-//            paramSensorEvent.what = 888;
-//            paramSensorEvent.obj = Integer.valueOf(j);
-//            this.mHandler.sendMessage(paramSensorEvent);
-        }
-
-    }
-
-    @Override
-    public void onAccuracyChanged(Sensor sensor, int i) {
-
-    }
-
 
     //Activity被覆盖到下面或者锁屏时被调用
     @Override
@@ -394,14 +357,11 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
     protected void onResume() {
         super.onResume();
         mBluetoothOp.enable();
-        this.mSensorManager.registerListener(this, this.mSensorManager.getDefaultSensor(1), 1);
     }
 
     //退出当前Activity或者跳转到新Activity时被调用
     public void onStop() {
         super.onStop();
-        this.mSensorManager.unregisterListener(this);
     }
-
 
 }
