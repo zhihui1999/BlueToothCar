@@ -1,7 +1,8 @@
 apply plugin: 'com.android.application'
 
 android {
-    compileSdkVersion 28
+    compileSdkVersion rootProject.ext.compileSdkVersion
+    buildToolsVersion rootProject.ext.buildToolsVersion
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_1_8
         targetCompatibility JavaVersion.VERSION_1_8
@@ -9,18 +10,40 @@ android {
     defaultConfig {
         applicationId "cn.edu.caztc.bluetoothcar"
         minSdkVersion 19
-        targetSdkVersion 28
-        versionCode 1
-        versionName "1.0"
+        flavorDimensions "versionCode"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+        targetSdkVersion rootProject.ext.targetSdkVersion
+        versionCode rootProject.ext.versionCode
+        versionName rootProject.ext.versionName
+
+        ndk {
+            abiFilters "armeabi", "armeabi-v7a", "x86"
+        }
+
     }
     buildTypes {
         release {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
+        debug {
+            jniDebuggable false
+        }
     }
+
+    productFlavors {
+        all32 { minSdkVersion 15 }
+        all64 { minSdkVersion 21 }
+    }
+
+    android.applicationVariants.all { variant ->
+        variant.outputs.all {
+            outputFileName = "BlueTooth-${defaultConfig.versionName}.apk"
+        }
+    }
+
 }
+
 
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
@@ -35,5 +58,18 @@ dependencies {
     //引入ButterKnife
     annotationProcessor 'com.jakewharton:butterknife-compiler:10.0.0'
     implementation 'com.jakewharton:butterknife:10.0.0'
+
+    // ijkplayer
+    implementation project(':ijkplayer-java')
+
+    all32Implementation project(':ijkplayer-armv5')
+    all32Implementation project(':ijkplayer-armv7a')
+    all32Implementation project(':ijkplayer-x86')
+
+    all64Implementation project(':ijkplayer-armv5')
+    all64Implementation project(':ijkplayer-armv7a')
+    all64Implementation project(':ijkplayer-arm64')
+    all64Implementation project(':ijkplayer-x86')
+    all64Implementation project(':ijkplayer-x86_64')
 
 }

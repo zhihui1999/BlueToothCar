@@ -4,9 +4,7 @@ import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
 import android.content.Context;
 import android.content.DialogInterface;
-import android.hardware.Sensor;
-import android.hardware.SensorEvent;
-import android.hardware.SensorEventListener;
+import android.content.Intent;
 import android.hardware.SensorManager;
 import android.os.Bundle;
 import android.util.Log;
@@ -15,17 +13,17 @@ import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.Button;
-import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.appcompat.app.AlertDialog;
+import androidx.appcompat.app.AppCompatActivity;
+
 import java.util.Iterator;
 import java.util.Set;
 
-import androidx.appcompat.app.AlertDialog;
-import androidx.appcompat.app.AppCompatActivity;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
@@ -88,6 +86,8 @@ public class MainActivity extends AppCompatActivity {
     Button btnTrackingMode;
     @BindView(R.id.btn_ExitMode)
     Button btnExitMode;
+    @BindView(R.id.btn_tio)
+    Button btnTio;
 
     //普通成员变量声明区
     private Context mContext = this;
@@ -100,10 +100,10 @@ public class MainActivity extends AppCompatActivity {
     private Set<BluetoothDevice> devicesSet = null;
     //命令名称
     private String[] commandNameArr = {"forward", "back", "turn_letf", "turn_right", "stop", "left", "center", "right",
-            "left_rotate", "right_rotate", "outfire", "whistle", "accelerate", "moderate","autopilotmode","trackingmode","exitmode"};
+            "left_rotate", "right_rotate", "outfire", "whistle", "accelerate", "moderate", "autopilotmode", "trackingmode", "exitmode"};
     //初始命令
     private String[] firstCommandArr = {"ONA", "ONB", "ONC", "OND", "ONF", "left", "center", "right",
-            "1", "2", "3", "4", "5", "6","$4WD,MODE31#","$4WD,MODE21#","$4WD,MODE30#"};
+            "1", "2", "3", "4", "5", "6", "$4WD,MODE31#", "$4WD,MODE21#", "$4WD,MODE30#"};
     private String[] commandArr = new String[17];
     private String[] blueToothDeviceNameArr;
     private String[] blueToothDeviceMACArr;
@@ -148,12 +148,13 @@ public class MainActivity extends AppCompatActivity {
     }
 
 
+
     /**
      * 相关按钮单击事件
      *
      * @param view
      */
-    @OnClick({R.id.btn_Connect, R.id.btn_Left, R.id.btn_Center, R.id.btn_Right, R.id.btn_LeftRotate, R.id.btn_Outfire, R.id.btn_Accelerate, R.id.btn_RightRotate, R.id.btn_Whistle, R.id.btn_Moderate,  R.id.btn_setting,R.id.btn_AutopilotMode, R.id.btn_TrackingMode, R.id.btn_ExitMode})
+    @OnClick({R.id.btn_Connect, R.id.btn_Left, R.id.btn_Center, R.id.btn_Right, R.id.btn_LeftRotate, R.id.btn_Outfire, R.id.btn_Accelerate, R.id.btn_RightRotate, R.id.btn_Whistle, R.id.btn_Moderate, R.id.btn_setting, R.id.btn_AutopilotMode, R.id.btn_TrackingMode, R.id.btn_ExitMode,R.id.btn_tio})
     public void onViewClicked(View view) {
         switch (view.getId()) {
             case R.id.btn_Connect:
@@ -197,6 +198,10 @@ public class MainActivity extends AppCompatActivity {
                 break;
             case R.id.btn_setting:
                 showSettingList();
+                break;
+            case R.id.btn_tio:
+                Intent intent =new Intent(this,Main2Activity.class);
+                startActivity(intent);
                 break;
             default:
                 break;
@@ -303,7 +308,7 @@ public class MainActivity extends AppCompatActivity {
      */
     private void showSettingList() {
         final String[] setting = {"设置前进按钮", "设置后退按钮", "设置左转按钮", "设置右转按钮", "设置停止按钮", "设置左按钮", "设置中按钮",
-                "设置右按钮", "设置左旋按钮", "设置右旋按钮", "设置灭火按钮", "设置鸣笛按钮", "设置加速按钮", "设置减速按钮","设置自动计时模式按钮","设置循迹模式按钮","设置模式退出按钮"};
+                "设置右按钮", "设置左旋按钮", "设置右旋按钮", "设置灭火按钮", "设置鸣笛按钮", "设置加速按钮", "设置减速按钮", "设置自动计时模式按钮", "设置循迹模式按钮", "设置模式退出按钮"};
         mBuilder = new AlertDialog.Builder(this).setIcon(R.mipmap.ic_icon_foreground)
                 .setTitle("设置指令")
                 .setItems(setting, new DialogInterface.OnClickListener() {
@@ -363,5 +368,6 @@ public class MainActivity extends AppCompatActivity {
     public void onStop() {
         super.onStop();
     }
+
 
 }
